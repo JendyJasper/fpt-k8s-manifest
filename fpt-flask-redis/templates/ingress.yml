@@ -1,0 +1,48 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-ingress
+  annotations:
+    # kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    certmanager.k8s.io/acme-challenge-type: dns01
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:571207880192:certificate/b0fa3282-c237-4272-acd3-4ff5ea139162
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+  labels:
+    name: fpt-ingress
+  namespace: main-fpt
+spec:
+  ingressClassName: alb
+  rules:
+
+  - host: "adaugo.jendyjasper.com"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: game-2048
+            port: 
+              number: 80
+
+  - host: {{ .Values.ingress.hostname }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Values.service.name }}
+            port:
+              number: {{ .Values.service.port }}
+
+  tls:
+    - hosts:
+      - adaugo.jendyjasper.com
+      - {{ .Values.ingress.hostname }}
+      secretName: letsencrypt-prod
+      

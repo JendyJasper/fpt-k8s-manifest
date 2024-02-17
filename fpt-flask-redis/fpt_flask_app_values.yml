@@ -1,0 +1,11 @@
+# values.yaml
+image:
+  repository: jendyjasper/fpt-flask-redis-app
+  tag: 1.4
+
+service:
+  name: fpt-flask-redis-app
+  port: 5000
+
+ingress:
+  hostname: fpt.jendyjasper.com

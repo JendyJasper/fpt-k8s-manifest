@@ -1,0 +1,4 @@
+apiVersion: v2
+name: fpt-flask-redis-app
+description: A Helm chart for Flask application with Redis
+version: 0.1.0
