@@ -1,7 +1,7 @@
 # values.yaml
 image:
   repository: 571207880192.dkr.ecr.us-east-1.amazonaws.com/fpt-flask-app
-  tag: a07b446
+  tag: 0540b41
 
 service:
   name: fpt-flask-redis-app
