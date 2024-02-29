@@ -19,7 +19,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.service.name }}
+{{- range .Values.service }}
+  name: {{ .name }}
   namespace: main-fpt
   annotations:
     alb.ingress.kubernetes.io/target-type: ip
@@ -28,6 +29,7 @@ spec:
   selector:
     app: {{ .Release.Name }}
   ports:
-  - port: {{ .Values.service.port }}
+  - port: {{ .port }}
     targetPort: 5000
     protocol: TCP
+{{- end }}

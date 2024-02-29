@@ -1,0 +1,12 @@
+# values.yaml
+image:
+  repository: 571207880192.dkr.ecr.us-east-1.amazonaws.com/fpt-flask-app
+  tag: 0540b41
+
+service:
+  - name: fpt-flask-redis-app
+    port: 5000
+    hostname: fpt.jendyjasper.com
+  - name: game-2048
+    port: 80
+    hostname: adaugo.jendyjasper.com

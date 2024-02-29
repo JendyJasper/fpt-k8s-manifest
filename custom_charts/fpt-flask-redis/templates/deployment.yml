@@ -51,4 +51,10 @@ spec:
             cpu: "500m"
         ports:
         - containerPort: 5000
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080  # Port inside the container where the application is listening
+          initialDelaySeconds: 10
+          periodSeconds: 30
 

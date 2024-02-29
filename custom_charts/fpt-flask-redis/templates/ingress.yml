@@ -18,31 +18,21 @@ spec:
   ingressClassName: alb
   rules:
 
-  - host: "adaugo.jendyjasper.com"
-    http:
-      paths:
-      - pathType: Prefix
-        path: "/"
-        backend:
-          service:
-            name: game-2048
-            port: 
-              number: 80
-
-  - host: {{ .Values.ingress.hostname }}
+{{- range .Values.service }}
+  - host: {{ .hostname }}
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: {{ .Values.service.name }}
+            name: {{ .name }}
             port:
-              number: {{ .Values.service.port }}
+              number: {{ .port }}
 
   tls:
     - hosts:
-      - adaugo.jendyjasper.com
-      - {{ .Values.ingress.hostname }}
+      - {{ .hostname }}
       secretName: letsencrypt-prod
+{{- end }}
       
