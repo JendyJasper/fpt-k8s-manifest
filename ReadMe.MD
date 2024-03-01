@@ -59,6 +59,7 @@
 `helm upgrade -i aws-load-balancer-controller aws/aws-load-balancer-controller -n ingress-controller -f alb_controller_values.yml`
 
 > if service account already exists and pods refuse to come up for aws load balancer ##controller, delete the service account and create again
+
 `eksctl delete iamserviceaccount --name aws-load-balancer-controller --namespace ingress-controller --cluster fpt-cluster`
 
 
@@ -75,6 +76,7 @@
 `helm repo update aws-efs-csi-driver`
 
 > Install a release of the driver using the Helm chart. Use the complete command if. If you already created a service account by following Create an IAM policy and role for Amazon EKS, then add the following arguments. and if If you don't have outbound access to the Internet, add the following arguments too To force the Amazon EFS CSI driver to use FIPS for mounting the file system, add the following argument. If running on fargate, scheduling on kube-system is a challenge i'm yet to resolve
+
 `helm upgrade --install efs-driver aws-efs-csi-driver/aws-efs-csi-driver --namespace default --set controller.serviceAccount.create=false --set controller.serviceAccount.name=efs-csi-controller-sa --set sidecars.livenessProbe.image.repository=602401143452.dkr.ecr.region-code.amazonaws.com/eks/livenessprobe --set sidecars.node-driver-registrar.image.repository=602401143452.dkr.ecr.region-code.amazonaws.com/eks/csi-node-driver-registrar --set sidecars.csiProvisioner.image.repository=602401143452.dkr.ecr.region-code.amazonaws.com/eks/csi-provisioner --set useFips=true`
 
 
