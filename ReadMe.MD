@@ -31,10 +31,10 @@
 ## AWS Load Balancer Controller installations
 
 #### Create IAM OIDC provider
-```eksctl utils associate-iam-oidc-provider \
+`eksctl utils associate-iam-oidc-provider \
     --region <aws-region> \
     --cluster <your-cluster-name> \
-    --approve```
+    --approve`
 
 #### Download IAM policy for the AWS Load Balancer Controller
 `curl -o iam-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json`
