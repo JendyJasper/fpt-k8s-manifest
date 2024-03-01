@@ -55,7 +55,7 @@
 #### Install the TargetGroupBinding CRDs:
 `kubectl apply -k "github.com/aws/eks-charts/stable/aws-load-balancer-controller//crds?ref=master"`
 
-##install alb controller
+## install alb controller
 `helm upgrade -i aws-load-balancer-controller aws/aws-load-balancer-controller -n ingress-controller -f alb_controller_values.yml`
 
 > if service account already exists and pods refuse to come up for aws load balancer ##controller, delete the service account and create again
