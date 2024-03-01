@@ -1,12 +1,12 @@
 #Setup kubeconfig
-aws eks --region us-east-1 update-kubeconfig --name fpt-cluster
+`aws eks --region us-east-1 update-kubeconfig --name fpt-cluster`
 
         |---------------------------------------------------|
         |                                                   |
         |---------------------------------------------------|
 
 #Install the custom helm chart for the fpt python-reddis app
-helm upgrade -i --reuse-values fpt-redis-app fpt-flask-redis/. -f fpt-flask-redis/fpt_flask_app_values.yml
+`helm upgrade -i --reuse-values fpt-redis-app custom_charts/fpt-flask-redis/. -f custom_charts/fpt-flask-redis/fpt_flask_app_values.yml`
 
         |---------------------------------------------------|
         |                                                   |
@@ -15,13 +15,13 @@ helm upgrade -i --reuse-values fpt-redis-app fpt-flask-redis/. -f fpt-flask-redi
 #Cert Manager installation
 
 ##cert-manager CustomResourceDefinition resources
-kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.3/cert-manager.crds.yaml
+`kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.3/cert-manager.crds.yaml`
 
 ## Add the Jetstack Helm repository
-helm repo add jetstack https://charts.jetstack.io
+`helm repo add jetstack https://charts.jetstack.io`
 
 ## Install the cert-manager helm chart
-helm upgrade -i  cert-manager --namespace cert-manager --version v1.13.3 jetstack/cert-manager -f cert_manager_values.yml
+`helm upgrade -i  cert-manager --namespace cert-manager --version v1.13.3 jetstack/cert-manager -f cert_manager_values.yml`
 
         |---------------------------------------------------|
         |                                                   |
@@ -31,13 +31,13 @@ helm upgrade -i  cert-manager --namespace cert-manager --version v1.13.3 jetstac
 #AWS Load Balancer Controller installations
 
 ##Create IAM OIDC provider
-eksctl utils associate-iam-oidc-provider \
+`eksctl utils associate-iam-oidc-provider \
     --region <aws-region> \
     --cluster <your-cluster-name> \
-    --approve
+    --approve`
 
 ##Download IAM policy for the AWS Load Balancer Controller
-curl -o iam-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json
+`curl -o iam-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json`
 
 ##Create an IAM policy called AWSLoadBalancerControllerIAMPolicy. Take note of the policy ARN that is returned
 aws iam create-policy \
