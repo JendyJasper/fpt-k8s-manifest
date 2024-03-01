@@ -5,55 +5,55 @@
         |                                                   |
         |---------------------------------------------------|
 
-#Install the custom helm chart for the fpt python-reddis app
-- `helm upgrade -i --reuse-values fpt-redis-app custom_charts/fpt-flask-redis/. -f custom_charts/fpt-flask-redis/fpt_flask_app_values.yml`
+#### Install the custom helm chart for the fpt python-reddis app
+`helm upgrade -i --reuse-values fpt-redis-app custom_charts/fpt-flask-redis/. -f custom_charts/fpt-flask-redis/fpt_flask_app_values.yml`
 
         |---------------------------------------------------|
         |                                                   |
         |---------------------------------------------------|
 
-#Cert Manager installation
+## Cert Manager installation
 
-##cert-manager CustomResourceDefinition resources
--  `kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.3/cert-manager.crds.yaml`
+#### cert-manager CustomResourceDefinition resources
+`kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.3/cert-manager.crds.yaml`
 
-## Add the Jetstack Helm repository
--  helm repo add jetstack https://charts.jetstack.io
+#### Add the Jetstack Helm repository
+`helm repo add jetstack https://charts.jetstack.io`
 
-## Install the cert-manager helm chart
--  helm upgrade -i  cert-manager --namespace cert-manager --version v1.13.3 jetstack/cert-manager -f cert_manager_values.yml
+#### Install the cert-manager helm chart
+`helm upgrade -i  cert-manager --namespace cert-manager --version v1.13.3 jetstack/cert-manager -f cert_manager_values.yml`
 
         |---------------------------------------------------|
         |                                                   |
         |---------------------------------------------------|
 
 
-#AWS Load Balancer Controller installations
+## AWS Load Balancer Controller installations
 
-##Create IAM OIDC provider
-`eksctl utils associate-iam-oidc-provider \
+#### Create IAM OIDC provider
+```eksctl utils associate-iam-oidc-provider \
     --region <aws-region> \
     --cluster <your-cluster-name> \
-    --approve`
+    --approve```
 
-##Download IAM policy for the AWS Load Balancer Controller
-curl -o iam-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json
+#### Download IAM policy for the AWS Load Balancer Controller
+`curl -o iam-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json`
 
-##Create an IAM policy called AWSLoadBalancerControllerIAMPolicy. Take note of the policy ARN that is returned
-aws iam create-policy \
+#### Create an IAM policy called AWSLoadBalancerControllerIAMPolicy. Take note of the policy ARN that is returned
+```aws iam create-policy \
     --policy-name AWSLoadBalancerControllerIAMPolicy \
-    --policy-document file://iam-policy.json
+    --policy-document file://iam-policy.json```
 
-##Create a IAM role and ServiceAccount for the Load Balancer controller, use the ARN from the step above
-eksctl create iamserviceaccount \
+#### Create a IAM role and ServiceAccount for the Load Balancer controller, use the ARN from the step above
+```eksctl create iamserviceaccount \
 --cluster=<cluster-name> \
 --namespace=kube-system \
 --name=aws-load-balancer-controller \
 --attach-policy-arn=arn:aws:iam::<AWS_ACCOUNT_ID>:policy/AWSLoadBalancerControllerIAMPolicy \
---approve
+--approve```
 
-##Install the TargetGroupBinding CRDs:
-kubectl apply -k "github.com/aws/eks-charts/stable/aws-load-balancer-controller//crds?ref=master"
+#### Install the TargetGroupBinding CRDs:
+`kubectl apply -k "github.com/aws/eks-charts/stable/aws-load-balancer-controller//crds?ref=master"`
 
 ##install alb controller
 helm upgrade -i aws-load-balancer-controller aws/aws-load-balancer-controller -n ingress-controller -f alb_controller_values.yml
