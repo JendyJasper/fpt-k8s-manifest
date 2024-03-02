@@ -30,9 +30,9 @@ spec:
             port:
               number: {{ .port }}
 
-  tls:
-    - hosts:
-      - {{ .hostname }}
-      secretName: letsencrypt-prod
+    tls:
+      - hosts:
+        - {{ .hostname }}
+        secretName: letsencrypt-prod
 {{- end }}
       

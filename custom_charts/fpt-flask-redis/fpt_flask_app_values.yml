@@ -7,6 +7,15 @@ service:
   - name: fpt-flask-redis-app
     port: 5000
     hostname: fpt.jendyjasper.com
+    label: fpt-flask-app
+    targetPort: 5000
   - name: game-2048
     port: 80
     hostname: adaugo.jendyjasper.com
+    label: game-2048
+    targetPort: 80
+
+game:
+  label: game-2048
+fpt:
+      label: fpt-flask-app
