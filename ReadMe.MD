@@ -135,3 +135,34 @@ sudo install -m 755 kubeseal /usr/local/bin/kubeseal
 - `kubeseal --controller-name NAME_OF_SEALED_SECRET_SERVICE --controller-namespace NAMESPACE_SEALED_SECRET_IS_RUNNING --format yaml < ORIGINAL_SECRET_FILE > GENERATED_SEALED_SECRET_NAME`
 - `kubeseal --controller-name kube-secret-sealed-secrets --controller-namespace default --format yaml < infr
 astructure/cert_manager/aws_secret.yml > infrastructure/cert_manager/aws_sealed_secret.yml`
+
+
+## External secret operator
+- add the repo: `helm repo add external-secrets https://charts.external-secrets.io`
+- install: `helm install external-secrets \
+   external-secrets/external-secrets \
+    -n external-secrets \
+    --create-namespace `
+
+### create a secret store
+```
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: aws-secretstore
+spec:
+  provider:
+    aws:
+      service: SecretsManager
+      region: us-east-1
+      auth:
+        secretRef:
+          accessKeyIDSecretRef:
+            name: aws-secret
+            key: access-key-id
+          secretAccessKeySecretRef:
+            name: aws-secret
+            key: secret-access-key
+```
+
+> when encoding, `echo "" | base64` adds a newline. Use instead: `echo -n "" | base64`
