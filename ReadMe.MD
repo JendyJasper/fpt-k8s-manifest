@@ -113,3 +113,25 @@
 - create the storage class
 - create the service account for the ebs or efs
 - if using static provisioning, create the persistence volume too
+
+
+### Sealed secret
+- `helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets`
+- `helm install kube-secret sealed-secrets/sealed-secrets`
+
+> Install the client-side tool (kubeseal) as explained in the docs below: https://github.com/bitnami-labs/sealed-secrets#installation-from-source
+
+- KUBESEAL_VERSION=''  Set this to, for example, KUBESEAL_VERSION='0.23.0'
+- https://api.github.com/repos/bitnami-labs/sealed-secrets/tags  to get the latest version
+- Then run the below command
+
+```
+wget "https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION:?}/kubeseal-${KUBESEAL_VERSION:?}-linux-amd64.tar.gz"
+tar -xvzf kubeseal-${KUBESEAL_VERSION:?}-linux-amd64.tar.gz kubeseal
+sudo install -m 755 kubeseal /usr/local/bin/kubeseal
+```
+
+## Seal the secret
+- `kubeseal --controller-name NAME_OF_SEALED_SECRET_SERVICE --controller-namespace NAMESPACE_SEALED_SECRET_IS_RUNNING --format yaml < ORIGINAL_SECRET_FILE > GENERATED_SEALED_SECRET_NAME`
+- `kubeseal --controller-name kube-secret-sealed-secrets --controller-namespace default --format yaml < infr
+astructure/cert_manager/aws_secret.yml > infrastructure/cert_manager/aws_sealed_secret.yml`
