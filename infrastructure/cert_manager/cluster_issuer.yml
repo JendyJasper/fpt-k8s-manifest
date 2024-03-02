@@ -15,7 +15,9 @@ spec:
       - dns01:
           route53:
             region: us-east-1
-            accessKeyID: AKIAYJ7VERYADY6UJWYR
+            accessKeyIDSecretRef:
+              name: aws-secret
+              key: access-key-id
             secretAccessKeySecretRef:
               name: aws-secret
               key: secret-access-key
