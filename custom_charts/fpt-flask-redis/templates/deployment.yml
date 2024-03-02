@@ -60,3 +60,39 @@ spec:
         imagePullPolicy: Always
         imagePullSecrets:
           - name: aws-secret
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: fpt-redis
+  namespace: main-fpt
+spec:
+  serviceName: fpt-redis
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.redis.label }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.redis.label }}
+    spec:
+      containers:
+      - name: fpt-redis
+        image: redis:7.2.4
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 6379
+  # volumeClaimTemplates:
+  # - metadata:
+  #     name: redis-data
+  #   spec:
+  #     accessModes: [ "ReadWriteOnce" ]
+  #     resources:
+  #       requests:
+  #         storage: 1Gi
