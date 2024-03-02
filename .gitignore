@@ -1,2 +1,4 @@
 aws_secret.yml 
 get_helm.sh 
+kubeseal
+kubeseal-0.26.0-linux-amd64.tar.gz
