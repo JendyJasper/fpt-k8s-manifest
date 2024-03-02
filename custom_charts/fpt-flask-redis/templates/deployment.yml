@@ -54,7 +54,9 @@ spec:
         livenessProbe:
           httpGet:
             path: /health
-            port: 8080  # Port inside the container where the application is listening
+            port: 5000  # Port inside the container where the application is listening
           initialDelaySeconds: 10
           periodSeconds: 30
-
+        imagePullPolicy: Always
+        imagePullSecrets:
+          - name: aws-secret
