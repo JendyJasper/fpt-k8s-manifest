@@ -166,3 +166,97 @@ spec:
 ```
 
 > when encoding, `echo "" | base64` adds a newline. Use instead: `echo -n "" | base64`
+
+
+## Velero activation for cluster back up and restore
+- Create S3 bucket
+- Create the IAM user
+- Attach policies to give velero the necessary permissions:
+```
+cat > velero-policy.json <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DescribeVolumes",
+                "ec2:DescribeSnapshots",
+                "ec2:CreateTags",
+                "ec2:CreateVolume",
+                "ec2:CreateSnapshot",
+                "ec2:DeleteSnapshot"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject",
+                "s3:DeleteObject",
+                "s3:PutObject",
+                "s3:AbortMultipartUpload",
+                "s3:ListMultipartUploadParts"
+            ],
+            "Resource": [
+                "arn:aws:s3:::${BUCKET}/*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucket"
+            ],
+            "Resource": [
+                "arn:aws:s3:::${BUCKET}"
+            ]
+        }
+    ]
+}
+EOF
+```
+- attach the policy to the user
+- Create an access key for the user
+- Create a Velero-specific credentials file (credentials-velero) in your local directory:
+```
+[default]
+aws_access_key_id=<AWS_ACCESS_KEY_ID>
+aws_secret_access_key=<AWS_SECRET_ACCESS_KEY>
+```
+> The access key ID and Secret access key have to be those of the newly created iam user
+
+#### Install and start Velero
+> useful links for the process https://dev.to/mxglt/how-to-setup-a-dr-for-your-k8s-cluster-with-velero-1l77
+- see https://github.com/vmware-tanzu/velero/releases for latest cli release of velero
+- download the cli
+```
+# Download the Velero release
+curl -L -o /tmp/velero.tar.gz curl -L -o /tmp/velero.tar.gz https://github.com/vmware-tanzu/velero/releases/download/v1.13.0/velero-v1.13.0-linux-amd64.tar.gz
+
+
+# Unzip it
+tar -C /tmp -xvf /tmp/velero.tar.gz
+
+# Move to the local/bin folder
+mv /tmp/velero-v1.13.0-linux-amd64/velero /usr/local/bin/velero
+chmod +x /usr/local/bin/velero
+
+# Test the velero command, and it should work!
+velero --help
+```
+#### install velero to the cluster
+> useful link for the process https://github.com/vmware-tanzu/velero-plugin-for-aws?tab=readme-ov-file#Install-and-start-Velero
+- see https://github.com/vmware-tanzu/velero-plugin-for-aws/releases for velero aws plugin latest release and adjust accordingly
+
+```
+velero install \
+    --provider aws \
+    --plugins velero/velero-plugin-for-aws:v1.9.0 \
+    --bucket $BUCKET \
+    --backup-location-config region=$REGION \
+    --snapshot-location-config region=$REGION \
+    --secret-file ./credentials-velero
+```
+> backup eveything in the cluster
+- velero backup create <backup-name> --include-namespaces="*" --snapshot-volumes --wait
+- velero backup create fpt-backup-1 --include-namespaces="*" --snapshot-volumes --wait
