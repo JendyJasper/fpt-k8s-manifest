@@ -7,7 +7,7 @@
         |---------------------------------------------------|
 
 
-## Install the custom helm chart for the fpt python-reddis app
+# Install the custom helm chart for the fpt python-reddis app
 `helm upgrade -i --reuse-values fpt-redis-app custom_charts/fpt-flask-redis/. -f custom_charts/fpt-flask-redis/fpt_flask_app_values.yml`
 
         |---------------------------------------------------|
